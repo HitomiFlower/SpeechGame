@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang = "ja">
+<head>
+  <meta charset="UTF8">
+  <title>Web Speech API WebSocket Sender</title>
+  <script>
+  var ws = new WebSocket('ws://localhost:12001');
+  var recognition = new webkitSpeechRecognition();
+  var recognizing = false;
+  var final_transcript = '';
+  var ignore_onend;
+  var start_timestamp;
+
+  recognition.lang = 'ja-JP';
+  recognition.continuous = true;
+  recognition.interimResults = true;
+
+  recognition.onstart = function(){
+    recognizing = true;
+    showInfo('Speak Now');
+  };
+
+  recognition.onerror = function(event) {
+    if (event.error == 'no-speech') {
+      showInfo('info_no_speech');
+      ignore_onend = true;
+    }
+    if (event.error == 'audio-capture') {
+      showInfo('info_no_microphone');
+      ignore_onend = true;
+    }
+    if (event.error == 'not-allowed') {
+      if (event.timeStamp - start_timestamp < 100) {
+        showInfo('info_blocked');
+      } else {
+        showInfo('info_denied');
+      }
+      ignore_onend = true;
+    }
+  };
+
+  recognition.onaudiostart = function(){
+    document.getElementById('info').innerHTML = 'Now is recording';
+  }
+
+
+
+  recognition.onresult = function(event) {
+    var interim_transcript = '';
+    for (var i = event.resultIndex; i < event.results.length; ++i) {
+      if (event.results[i].isFinal) {
+        final_transcript += event.results[i][0].transcript;
+      } else {
+        interim_transcript += event.results[i][0].transcript;
+      }
+    }
+    document.getElementById('interim').innerHTML = result;
+    document.getElementById('result').innerHTML = result;
+  };
+
+  recognition.onend = function() {
+    recognizing = false;
+    if (!final_transcript) {
+      showInfo('info_start');
+      return;
+    }
+    showInfo('');
+  }
+  recognition.start();
+
+  function showInfo(info){
+    document.getElementById('info').innerHTML = info;
+  }
+  </script>
+</head>
+<body>
+  <div id="error"></div>
+  <div id="interim"></div>
+  <div id="result"></div>
+  <div id="language"></div>
+  <div id="info"></div>
+</body>
+</html>
