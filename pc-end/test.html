@@ -252,7 +252,7 @@ a:hover {
                                     hasSended = false;
                                   }
                                   else{
-                                    wss.send('final:'+final_transcript);
+                                    wss.send(final_transcript);
                                   }
                                 }else{
                                   interimProcess(interim_transcript);
@@ -285,12 +285,12 @@ a:hover {
                             function interimProcess(oriResult){
                               if((oriResult === old_final) && oriResult != ''){
                                 if(oriResult.split(' ').length > 1 && oriResult.indexOf(previousResult) != -1){
-                                  wss.send('interim:'+oriResult.replace(previousResult + ' ', ''));
+                                  wss.send(oriResult.replace(previousResult + ' ', ''));
                                   old_final = '';
                                   hasSended = true;
                                   previousResult = oriResult;
                                 }else{
-                                  wss.send('interim:'+oriResult);
+                                  wss.send(oriResult);
                                   old_final = '';
                                   hasSended = true;
                                   previousResult = oriResult;
