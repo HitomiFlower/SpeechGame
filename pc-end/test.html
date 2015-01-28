@@ -124,7 +124,9 @@ a:hover {
                             wss.onmessage = function(e){
                               switch(e.data){
                                 case 'info_start':
-                                  startButton(event);
+                                  if(!recognizing){
+                                    startButton(event);
+                                  }
                                   break;
 
                                 case 'info_stop':

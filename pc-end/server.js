@@ -30,7 +30,6 @@ var chromews;
 var unityServer = new ws({port: UNITY_PORT});
 unityServer.on('connection', function(ws){
   console.log('Unity connected');
-  ws.send('You have connected');
   unityWebSockets.push(ws);
   //Receive command from Unity
   ws.on('message', function(info){
